@@ -224,17 +224,17 @@ rf_model = load('Models/rf.pkl')
 iso_model = load('Models/iso.pkl')
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 👤 Author
+## Author
 
 Created as part of a comprehensive machine learning portfolio project.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- Dataset source: Credit card transactions dataset
+- Dataset source: Credit card transactions dataset (Kaggle)
 - MLflow for experiment tracking capabilities
 - scikit-learn community for robust ML tools
 
