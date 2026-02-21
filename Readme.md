@@ -259,6 +259,7 @@ POST /predict/unsupervised
 
 **Dual Model Support**: Both supervised and unsupervised fraud detection  
 **Input Validation**: Pydantic models ensure data integrity  
+**Structured Responses**: `response_model` parameter on both POST endpoints enforces typed, validated JSON responses (`ClassificationResponse` and `UnsupervisedResponse`)  
 **Automatic Scaling**: Pre-loaded DVC-tracked scalers for preprocessing  
 **Health Monitoring**: Health check endpoint for uptime monitoring  
 **Fast Response**: Optimized for real-time predictions (~50ms)  
@@ -540,7 +541,8 @@ With Random Forest achieving **92.06% precision** and **77.33% recall**:
 ```
 credit-card-fraud-detection/
 ├── main.py                          # FastAPI application
-├── Models/                          # DVC-tracked models & scalers
+├── .gitignore                       # Excludes __pycache__, Models/, data/, mlruns/ from Git
+├── Models/                          # DVC-tracked models & scalers (Git-ignored, DVC-tracked)
 │   ├── rf.pkl                       # Random Forest classifier
 │   ├── classification_scaler.pkl    # StandardScaler for classification
 │   ├── iso.pkl                      # Isolation Forest model
@@ -548,7 +550,7 @@ credit-card-fraud-detection/
 ├── notebooks/                       # Jupyter notebooks
 │   ├── classification.ipynb         # Supervised learning experiments
 │   └── unsupervised.ipynb           # Unsupervised learning experiments
-├── mlruns/                          # MLflow experiment tracking
+├── mlruns/                          # MLflow experiment tracking (Git-ignored)
 ├── .dvc/                            # DVC configuration
 └── README.md                        # This file
 ```
