@@ -66,7 +66,7 @@ def health_check():
     return {'status':'active'}
 
 
-@app.post('/predict/classification')
+@app.post('/predict/classification',response_model=ClassificationResponse)
 def predict_classification(data:CardData):
     input_df=pd.DataFrame([data.model_dump(by_alias=True)])
 
@@ -80,7 +80,7 @@ def predict_classification(data:CardData):
     return ClassificationResponse(is_anomaly=prediction,Fraud_Probability=prob)
 
 
-@app.post('/predict/unsupervised')
+@app.post('/predict/unsupervised',response_model=UnsupervisedResponse)
 def predict_unsupervised(data:CardData):
     input_df=pd.DataFrame([data.model_dump(by_alias=True)])
     
