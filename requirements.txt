@@ -1,0 +1,16 @@
+numpy>=1.24.0        # Numerical computing and array operations
+pandas>=2.0.0        # Data manipulation and preprocessing
+scikit-learn>=1.3.0  # RandomForest, IsolationForest, LogisticRegression, DecisionTree, StandardScaler
+xgboost>=2.0.0       # XGBoost Classifier
+joblib>=1.3.0        # Saving and loading .pkl model artifacts
+fastapi>=0.110.0     # REST API framework
+uvicorn>=0.29.0      # ASGI server to run FastAPI
+pydantic>=2.0.0      # Request/response schema validation
+mlflow>=2.11.0       # Experiment tracking and model run comparison
+dvc>=3.49.0          # Model and data version control
+jupyter>=1.0.0       # Notebooks for supervised and unsupervised experiments
+ipykernel>=6.29.0    # Jupyter kernel support
+matplotlib>=3.8.0    # Plots and visualizations
+seaborn>=0.13.0      # Statistical visualizations
+requests>=2.31.0     # HTTP client for API testing
+httpx>=0.27.0        # Async HTTP client for FastAPI test client
