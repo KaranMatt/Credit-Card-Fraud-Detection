@@ -160,6 +160,26 @@ If fraudsters attempt ₹100 crore in fraudulent transactions:
 - **Complements supervised approach**: Multi-layer defense system
 - **Real-time anomaly flagging**: Can operate independently
 
+#### The Critical Limitation of Supervised Models in Fraud Detection
+
+Supervised models like Random Forest and XGBoost are trained on **historical, labeled fraud data** — meaning they can only recognize fraud patterns that existed in their training set. This creates a fundamental blind spot: **they cannot detect new or evolving fraud types that were never labeled during training**.
+
+Fraudsters constantly adapt — inventing new attack vectors, exploiting emerging payment channels, and crafting schemes that look nothing like previously recorded fraud. A supervised model, no matter how well-tuned, will simply classify these novel attacks as "legitimate" because it has no labeled examples to learn from. Its decision boundary is, by definition, anchored to the past.
+
+**Isolation Forest sidesteps this limitation entirely.** Because it learns what "normal" looks like rather than what "fraud" looks like, it flags *any* transaction that deviates significantly from normal behavior — whether or not that deviation matches a known fraud pattern. This makes it inherently **adaptable to new and emerging scam types**, such as:
+- AI-powered synthetic identity fraud
+- New social engineering schemes (e.g., voice cloning, deepfake-assisted fraud)
+- Micro-transaction laundering via newly launched payment rails
+- Merchant fraud patterns unique to Tier-II/III city expansion
+
+In short: supervised models are powerful within the boundaries of what they've seen; unsupervised anomaly detection is what catches what they miss.
+
+#### Lower Metrics ≠ Less Important
+
+Looking at the performance comparison, the Isolation Forest's numbers — 4.57% precision and 62.67% recall — appear far weaker than Random Forest's 92.06% precision and 77.33% recall. However, **these metrics are evaluated on historical labeled data**, which inherently favors supervised models (they were trained specifically to match those labels). The real value of Isolation Forest lies precisely where metrics cannot capture it: **detecting fraud that has never been seen or labeled before**.
+
+A supervised model achieving 92% precision on known fraud patterns offers zero protection against a completely new type of attack. Isolation Forest, despite its lower headline numbers, remains a critical layer of defense because it operates outside the boundaries of what has been previously recorded — making it the only model capable of catching tomorrow's fraud, not just yesterday's.
+
 ### Preprocessing
 
 ```python
@@ -167,6 +187,31 @@ If fraudsters attempt ₹100 crore in fraudulent transactions:
 2. Contamination parameter tuning (0.001 to 0.1)
 3. Multiple configurations tested and logged in MLflow
 ```
+
+### Why We Tune the Contamination Parameter
+
+The `contamination` parameter is one of the most consequential hyperparameters in Isolation Forest. It tells the model **what fraction of the training data it should treat as anomalies** — essentially, it sets the model's sensitivity threshold for flagging transactions as fraudulent.
+
+#### What Contamination Actually Does
+
+Internally, Isolation Forest assigns an anomaly score to every transaction. The `contamination` value determines the **score cutoff** — transactions below this cutoff are labelled as anomalies. A higher contamination value lowers this threshold, causing the model to flag more transactions as fraud; a lower value raises it, making the model more conservative.
+
+#### Why Different Values Were Tested (0.001 → 0.1)
+
+The real-world fraud rate in this dataset is approximately **0.17%**. However, we deliberately tested contamination values both below and above this rate for the following reasons:
+
+| Contamination | Behaviour | Risk |
+|---|---|---|
+| **Very low (e.g., 0.001)** | Only the most extreme outliers flagged | High false negatives — many frauds missed |
+| **Near true rate (e.g., 0.003)** | Aligns model sensitivity with actual fraud prevalence | Balanced precision-recall trade-off ✅ |
+| **Moderate (e.g., 0.01–0.02)** | More transactions flagged | Recall improves but precision drops sharply |
+| **High (e.g., 0.05–0.1)** | Very aggressive flagging | Floods fraud analysts with false positives |
+
+#### Why 0.003 Was Selected as Optimal
+
+Setting contamination too low causes the model to miss real frauds (low recall). Setting it too high floods the system with false positives (low precision), which increases operational costs and causes customer friction. **0.003** was found to best align the model's internal decision boundary with the actual fraud prevalence in the dataset (~0.17%), yielding the best balance of recall (62.67%) and precision (4.57%) under fully unsupervised conditions — where no labels are available to guide the model at all.
+
+> **Note**: Unlike supervised models where class imbalance is handled via class weights or resampling, in unsupervised learning the contamination parameter is the *primary lever* for controlling this balance. Getting it right is therefore critical to real-world performance.
 
 ### Performance Results
 
